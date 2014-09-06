@@ -8,14 +8,14 @@ And to support all plattforms we usually use (windows phone/os, android and ipho
 Current roadmap:
 
   - v1 should contain
-    - Possibility to set custom rules for each card (1-12)
+    - Possibility to set custom rules for each card (1-13)
     - Possibility to save thoose rules in a cookie for later use if something crashes or is closed down
     - Only pure html, css and js to ensure everything can be runned on devices (and "offline" from a SINGLE html file)
     - Next/previous card navigation
     - Ugly as fck graphic
     
   - future feauters (thoughts and so)
-    - Custom rules for all cards and types (1-12 * 4 for diamond, spades, hearts and clubs)
+    - Custom rules for all cards and types (1-13 * 4 for diamond, spades, hearts and clubs)
     - Card counter (how many played/left and/or "king warning")
     - Sound effects? (technical limitations if should be available offline in a single html file?)
     - Cards that have "save"/"use" abilites?
