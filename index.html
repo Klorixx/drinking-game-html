@@ -22,6 +22,46 @@ and open the template in the editor.
                 width: 100%;
                 hegiht: 100%;
             }
+            #navigation-wrapper {
+                width: 100%;
+                background-color: blue;
+                text-align: center;
+            }
+            #navigation-wrapper a {
+                background-color: aqua;
+                padding: 8px;
+                margin: 5px 15px;
+                font-size: 20px;
+                border-radius: 5px;
+                color: white;
+                display: inline-block;
+            }
+            
+            .current-card-wrapper {
+                width: 100%;
+            }
+            #current-card {
+                margin: 15px auto 0 auto;
+                width: 254px;
+                height: 352px;
+                background-color: white;
+                border-radius: 10px;
+                position: relative;
+            }
+            .card-icon {
+                width: 15%;
+                height: 15%;
+                background-color: red;
+                position: absolute;
+            }
+            #upper-card-icon {
+                top: 2%;
+                left: 2%;
+            }
+            #lower-card-icon {
+                bottom: 2%;
+                right: 2%;
+            }
 
             #toolbar {
                 position: fixed;
@@ -31,24 +71,27 @@ and open the template in the editor.
                 background-color: white;
             }
             #toolbar-toggle {
-                height: 25px;
                 font-size: 20px;
                 background-color: grey;
                 text-align: center;
             }
             #toolbar-content {
+                height: 100%;
                 padding: 5px;
-                display: block;
             }
         </style>
     </head>
     <body>
         <div id="wrapper">
+            <div id="navigation-wrapper">
+                <a onclick="previousCard()">Föregående kort</a>
+                <a onclick="nextCard()">Nästa kort</a>
+            </div>
             <div class="current-card-wrapper">
                 <div id="current-card">
-                    <div id="upper-card-icon"></div>
+                    <div id="upper-card-icon" class="card-icon"></div>
                     <div id="card-content"></div>
-                    <div id="lower-card-icon"></div>
+                    <div id="lower-card-icon" class="card-icon"></div>
                 </div>
             </div>
             <div id="card-info-text">
@@ -57,7 +100,7 @@ and open the template in the editor.
         </div>
         <div id="toolbar">
             <div id="toolbar-toggle">Inställningar (visa)</div>
-            <div id="toolbar-content">
+            <div id="toolbar-content" style="display: none;">
                 <div class="toolbar-section-wrapper">
                     <div class="toolbar-section-header">Kortinställningar</div>
                     <div class="toolbar-section-content">
@@ -65,7 +108,9 @@ and open the template in the editor.
                             <tr>
                                 <th>Kort</th><th>Regel</th>
                             </tr>
-                            <tr><td>Kung</td><td><input type="text" /></td></tr>
+                            <tr>
+                                <td>Kung</td><td><input type="text" id="king-input" name="king-input" /></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -73,16 +118,19 @@ and open the template in the editor.
         </div>
         <script type="text/javascript">
             document.getElementById('toolbar-toggle').addEventListener('click', function(e) {
+                var toolBar = document.getElementById('toolbar');
                 var toolbarContent = document.getElementById('toolbar-content');
                 var toolbarToggle = document.getElementById('toolbar-toggle');
                 
                 // Toolbar is closed
-                if(toolbarContent.style.display == 'none'){
+                if(toolbarContent.style.display === 'none'){
                     toolbarContent.style.display = 'block';
+                    toolBar.style.height = '100%';
                     this.innerHTML = 'Inställningar (dölj)';
                 } else {
                     toolbarContent.style.display = 'none';
                     this.innerHTML = 'Inställningar (visa)';
+                    toolBar.style.height = 'initial';
                 }
             });
         </script>
