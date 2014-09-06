@@ -20,3 +20,4 @@ Current roadmap:
     - Sound effects? (technical limitations if should be available offline in a single html file?)
     - Cards that have "save"/"use" abilites?
     - Tracking of players
+    - Help/info as a optional textarea to explain a certain card or rule
