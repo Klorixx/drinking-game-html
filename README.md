@@ -6,6 +6,7 @@ And to support all plattforms we usually use (windows phone/os, android and ipho
 
 
 Current roadmap:
+
   -v1 should contain
     - Possibility to set custom rules for each card (1-12)
     - Possibility to save thoose rules in a cookie for later use if something crashes or is closed down
