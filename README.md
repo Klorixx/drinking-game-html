@@ -7,7 +7,7 @@ And to support all plattforms we usually use (windows phone/os, android and ipho
 
 Current roadmap:
 
-  -v1 should contain
+  - v1 should contain
     - Possibility to set custom rules for each card (1-12)
     - Possibility to save thoose rules in a cookie for later use if something crashes or is closed down
     - Only pure html, css and js to ensure everything can be runned on devices (and "offline" from a SINGLE html file)
