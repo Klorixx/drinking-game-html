@@ -62,6 +62,9 @@ and open the template in the editor.
                 bottom: 2%;
                 right: 2%;
             }
+            #card-content {
+                padding: 50% 5%;
+            }
 
             #toolbar {
                 position: fixed;
@@ -109,7 +112,43 @@ and open the template in the editor.
                                 <th>Kort</th><th>Regel</th>
                             </tr>
                             <tr>
-                                <td>Kung</td><td><input type="text" id="king-input" name="king-input" /></td>
+                                <td>Kung</td><td><input type="text" id="13-input" name="13-input" value="Kung"/></td>
+                            </tr>
+                            <tr>
+                                <td>Dam</td><td><input type="text" id="12-input" name="12-input" value="Kategori"/></td>
+                            </tr>
+                            <tr>
+                                <td>Knekt</td><td><input type="text" id="11-input" name="11-input" value="Ny regel"/></td>
+                            </tr>
+                            <tr>
+                                <td>10</td><td><input type="text" id="10-input" name="10-input" value="Välj nästa spelare"/></td>
+                            </tr>
+                            <tr>
+                                <td>9</td><td><input type="text" id="9-input" name="9-input" value="Vattenfall"/></td>
+                            </tr>
+                            <tr>
+                                <td>8</td><td><input type="text" id="8-input" name="8-input" value="Ny regel"/></td>
+                            </tr>
+                            <tr>
+                                <td>7</td><td><input type="text" id="7-input" name="7-input" value="Sifferleken"/></td>
+                            </tr>
+                            <tr>
+                                <td>6</td><td><input type="text" id="6-input" name="6-input" value="Ge 6 klunkar"/></td>
+                            </tr>
+                            <tr>
+                                <td>5</td><td><input type="text" id="5-input" name="5-input" value="Ge 5 klunkar"/></td>
+                            </tr>
+                            <tr>
+                                <td>4</td><td><input type="text" id="4-input" name="4-input" value="Ge 4 klunkar"/></td>
+                            </tr>
+                            <tr>
+                                <td>3</td><td><input type="text" id="3-input" name="3-input" value="Drick 3 klunkar"/></td>
+                            </tr>
+                            <tr>
+                                <td>2</td><td><input type="text" id="2-input" name="2-input" value="Ge en shot"/></td>
+                            </tr>
+                            <tr>
+                                <td>Äss</td><td><input type="text" id="1-input" name="1-input" value="Ta en shot"/></td>
                             </tr>
                         </table>
                     </div>
@@ -133,6 +172,100 @@ and open the template in the editor.
                     toolBar.style.height = 'initial';
                 }
             });
+            
+            function nextCard(){
+                var card = deck.getNextCard(), cardHtml = deck.parseCardToHtml(card), iconDivs = document.getElementsByClassName('card-icon'), i;
+                for(i=0;i<iconDivs.length;++i){
+                    iconDivs[i].innerHTML = cardHtml;
+                }
+                card = card.substring(1);
+                console.log(card);
+                document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
+            }
+            
+            // Whole deck logic
+            function cardDeck() {
+                this.cards = [
+                    // Clubs
+                    'c1','c2','c3','c4','c5','c6','c7','c8','c9','c10','c11','c12','c13',
+                    // Spades
+                    's1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13',
+                    // Hearts
+                    'h1','h2','h3','h4','h5','h6','h7','h8','h9','h10','h11','h12','h13',
+                    // Diamonds
+                    'd1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13'
+                ];
+                this.cardDirection = [];
+                this.dealtCards = [];
+                
+                this.shuffleDeck = function(){
+                    // Thank you CoolAJ86 for pure cs shuffle script
+                    // http://stackoverflow.com/a/2450976
+                    array = this.cards;
+                    var currentIndex = array.length, tempVal, randIndex;
+                    
+                    while(currentIndex !== 0){
+                        randIndex = Math.floor(Math.random() * currentIndex);
+                        --currentIndex;
+                        
+                        tempVal = array[currentIndex];
+                        array[currentIndex] = array[randIndex];
+                        array[randIndex] = tempVal;
+                    }
+                    
+                    this.cardDirection = array;
+                }
+                
+                this.getNextCard = function(){
+                    var card = this.cardDirection[0];
+                    this.cardDirection.splice(0,1);
+                    this.dealtCards.push(card);
+                    
+                    return card;
+                }
+                
+                this.getPreviousCard = function(){
+                    
+                }
+                
+                this.parseCardToHtml = function(cardId){
+                    var cardType, outHtml;
+                
+                    // Check card for "type"
+                    // Spades
+                    if(cardId.indexOf('s') !== -1){
+                        cardType = '&spades;';
+                    } else
+                    // Clubs
+                    if(cardId.indexOf('c') !== -1){
+                        cardType = '&clubs;';
+                    } else 
+                    // Hearts
+                    if(cardId.indexOf('h') !== -1){
+                        cardType = '&hearts;';
+                    } else 
+                    // Diamonds
+                    if(cardId.indexOf('d') !== -1){
+                        cardType = '&diams;';
+                    }
+                    // Remove cardType letter so we only have number left
+                    cardId = cardId.substring(1);
+                    
+                    // Little html parse, rather than splitting outside function
+                    outHtml = '<span class="card-html-icon">'+cardType+'</span>'+
+                            '<span class="card-html-number">'+cardId+'</span>';
+                    
+                    return outHtml;
+                }
+            }
+            
+            var deck;
+            function initiateGame(){
+                deck = new cardDeck();
+                deck.shuffleDeck();
+            }
+            
+            window.onload = initiateGame();
         </script>
     </body>
 </html>
