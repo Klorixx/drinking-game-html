@@ -48,6 +48,12 @@ and open the template in the editor.
                 border-radius: 10px;
                 position: relative;
             }
+            #card-background {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                text-align: center;
+            }
             .card-icon {
                 width: 18%;
                 height: 22%;
@@ -72,8 +78,24 @@ and open the template in the editor.
             .card-icon .card-html-icon, .card-icon .card-html-number {
                 width: 100%;
             }
+            #card-content-wrapper {
+                width: 80%;
+                height: 100px;
+                line-height: 100px;
+                position: absolute;
+                top: 35%;
+                left: 10%;
+                -ms-transform: rotate(-45deg); /* IE 9 */
+                -webkit-transform: rotate(-45deg); /* Chrome, Safari, Opera */
+                transform: rotate(-45deg);
+                text-align: center;
+                background-color: aqua;
+            }
             #card-content {
-                padding: 50% 5%;
+                display: inline-block;
+                vertical-align: middle;
+                line-height: normal;
+                font-size: 30px;
             }
 
             #toolbar {
@@ -99,11 +121,13 @@ and open the template in the editor.
             <div id="navigation-wrapper">
                 <a onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard());">Föregående kort</a>
                 <a onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">Nästa kort</a>
+                <div id="card-counter">52 kort kvar</div>
             </div>
             <div class="current-card-wrapper">
                 <div id="current-card">
+                    <div id="card-background"></div>
                     <div id="upper-card-icon" class="card-icon"></div>
-                    <div id="card-content"></div>
+                    <div id="card-content-wrapper"><span id="card-content"></span></div>
                     <div id="lower-card-icon" class="card-icon"></div>
                 </div>
             </div>
@@ -184,13 +208,18 @@ and open the template in the editor.
             });
             
             function populateCard(card){
-                console.log('Going to populate with '+card);
-                var cardHtml = deck.parseCardToHtml(card), iconDivs = document.getElementsByClassName('card-icon'), i;
+                var cardHtml = deck.parseCardToHtml(card), 
+                    cardBackgroundHtml = deck.parseCardToBackgroundHtml(card), 
+                    iconDivs = document.getElementsByClassName('card-icon'), 
+                    i;
+            
                 for(i=0;i<iconDivs.length;++i){
                     iconDivs[i].innerHTML = cardHtml;
                 }
                 card = card.substring(1);
                 document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
+                document.getElementById('card-background').innerHTML = cardBackgroundHtml;
+                document.getElementById('card-counter').innerHTML = deck.getCardsLeft()+' kort kvar';
             }
             
             // Whole deck logic
@@ -230,52 +259,76 @@ and open the template in the editor.
                 this.getNextCard = function(){
                     // Check if we actually have cards left
                     if(this.cardDirection.length > 0){
-                        var card = this.cardDirection[0];
+                        // Move current card to dealt pool
+                        this.dealtCards.push(this.currentCard);
+
+                        // Get new current card
+                        this.currentCard = this.cardDirection[0];
+                        
+                        // Remove that card from dealing pool
                         this.cardDirection.splice(0,1);
-                        this.dealtCards.push(card);
-                        this.currentCard = card;
+
+                        return this.currentCard;
                     }
-                    
-                    return card;
                 }
                 
                 this.getPreviousCard = function(){
-                    var card = this.dealtCards[this.dealtCards.length-1];
-                    
-                    // We only want to move card back and forth if not the first one
-                    if(this.dealtCards.length > 1){
-                        this.cardDirection.unshift(card);
+                    // Only do something if we have a previous card aka a dealt card
+                    if(this.dealtCards.length > 0){
+                        // Put current card back into dealing deck
+                        this.cardDirection.unshift(this.currentCard);
+                        
+                        // Retrive last card from dealt deck
+                        this.currentCard = this.dealtCards[this.dealtCards.length-1];
+
+                        // Remove "current" card from dealt pool
                         this.dealtCards.pop();
+
+                        return this.currentCard;
                     }
-                    this.currentCard = card;
-                    
-                    return card;
                 }
                 
                 this.getCurrentCard = function(){
                     return this.currentCard;
                 }
                 
+                this.getCardsLeft = function(){
+                    return this.cardDirection.length;
+                }
+                
                 this.parseCardToHtml = function(cardId){
                     var cardType, outHtml;
                 
-                    // Check card for "type"
-                    // Spades
-                    if(cardId.indexOf('s') !== -1){
-                        cardType = '&spades;';
-                    } else
-                    // Clubs
-                    if(cardId.indexOf('c') !== -1){
-                        cardType = '&clubs;';
-                    } else 
-                    // Hearts
-                    if(cardId.indexOf('h') !== -1){
-                        cardType = '&hearts;';
-                    } else 
-                    // Diamonds
-                    if(cardId.indexOf('d') !== -1){
-                        cardType = '&diams;';
+                    cardType = this.getCardType(cardId);
+                    cardId = this.parseSpecialCard(cardId);
+                    // colorClass = (cardType === ('&spades;' or '&clubs;')?'black':'red');
+                    console.log(colorClass);
+                    // Little html parse, rather than splitting outside function
+                    outHtml = '<div class="card-html-number">'+cardId+'</div>'+
+                            '<div class="card-html-icon">'+cardType+'</div>';
+                    
+                    return outHtml;
+                }
+                
+                this.parseCardToBackgroundHtml = function(cardId){
+                    var cardType = this.getCardType(cardId), 
+                        outHtml;
+                
+                    cardId = this.parseSpecialCard(cardId);
+                    
+                    // How do we solve king, dame and knight background?
+                    if(isNaN(cardId)){
+                        return 'img somehow';
                     }
+                    
+                    // Fancy function for painting fancy patterns
+                    
+                    return '<div class="row">'+
+                            '<span class="background-icon">'+cardType+'</span>'+
+                        '</div>';
+                }
+                
+                this.parseSpecialCard = function(cardId){
                     // Remove cardType letter so we only have number left
                     cardId = cardId.substring(1);
                     // Check for specials like king, dame or knight
@@ -296,11 +349,30 @@ and open the template in the editor.
                             break;
                     }
                     
-                    // Little html parse, rather than splitting outside function
-                    outHtml = '<div class="card-html-number">'+cardId+'</div>'+
-                            '<div class="card-html-icon">'+cardType+'</div>';
-                    
-                    return outHtml;
+                    return cardId;
+                }
+                
+                this.getCardType = function(cardId){
+                    var cardType;
+                    // Check card for "type"
+                    // Spades
+                    if(cardId.indexOf('s') !== -1){
+                        cardType = '&spades;';
+                    } else
+                    // Clubs
+                    if(cardId.indexOf('c') !== -1){
+                        cardType = '&clubs;';
+                    } else 
+                    // Hearts
+                    if(cardId.indexOf('h') !== -1){
+                        cardType = '&hearts;';
+                    } else 
+                    // Diamonds
+                    if(cardId.indexOf('d') !== -1){
+                        cardType = '&diams;';
+                    }
+                
+                    return cardType;
                 }
             }
             
