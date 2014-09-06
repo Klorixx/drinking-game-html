@@ -49,10 +49,13 @@ and open the template in the editor.
                 position: relative;
             }
             .card-icon {
-                width: 15%;
-                height: 15%;
+                width: 18%;
+                height: 22%;
                 background-color: red;
                 position: absolute;
+                font-size: 45px;
+                line-height: 39px;
+                text-align: center;
             }
             #upper-card-icon {
                 top: 2%;
@@ -61,6 +64,13 @@ and open the template in the editor.
             #lower-card-icon {
                 bottom: 2%;
                 right: 2%;
+                // Rotate for extra nice effect
+                -ms-transform: rotate(180deg); /* IE 9 */
+                -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+                transform: rotate(180deg);
+            }
+            .card-icon .card-html-icon, .card-icon .card-html-number {
+                width: 100%;
             }
             #card-content {
                 padding: 50% 5%;
@@ -87,8 +97,8 @@ and open the template in the editor.
     <body>
         <div id="wrapper">
             <div id="navigation-wrapper">
-                <a onclick="previousCard()">Föregående kort</a>
-                <a onclick="nextCard()">Nästa kort</a>
+                <a onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard());">Föregående kort</a>
+                <a onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">Nästa kort</a>
             </div>
             <div class="current-card-wrapper">
                 <div id="current-card">
@@ -173,13 +183,13 @@ and open the template in the editor.
                 }
             });
             
-            function nextCard(){
-                var card = deck.getNextCard(), cardHtml = deck.parseCardToHtml(card), iconDivs = document.getElementsByClassName('card-icon'), i;
+            function populateCard(card){
+                console.log('Going to populate with '+card);
+                var cardHtml = deck.parseCardToHtml(card), iconDivs = document.getElementsByClassName('card-icon'), i;
                 for(i=0;i<iconDivs.length;++i){
                     iconDivs[i].innerHTML = cardHtml;
                 }
                 card = card.substring(1);
-                console.log(card);
                 document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
             }
             
@@ -195,6 +205,7 @@ and open the template in the editor.
                     // Diamonds
                     'd1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13'
                 ];
+                this.currentCard;
                 this.cardDirection = [];
                 this.dealtCards = [];
                 
@@ -217,15 +228,32 @@ and open the template in the editor.
                 }
                 
                 this.getNextCard = function(){
-                    var card = this.cardDirection[0];
-                    this.cardDirection.splice(0,1);
-                    this.dealtCards.push(card);
+                    // Check if we actually have cards left
+                    if(this.cardDirection.length > 0){
+                        var card = this.cardDirection[0];
+                        this.cardDirection.splice(0,1);
+                        this.dealtCards.push(card);
+                        this.currentCard = card;
+                    }
                     
                     return card;
                 }
                 
                 this.getPreviousCard = function(){
+                    var card = this.dealtCards[this.dealtCards.length-1];
                     
+                    // We only want to move card back and forth if not the first one
+                    if(this.dealtCards.length > 1){
+                        this.cardDirection.unshift(card);
+                        this.dealtCards.pop();
+                    }
+                    this.currentCard = card;
+                    
+                    return card;
+                }
+                
+                this.getCurrentCard = function(){
+                    return this.currentCard;
                 }
                 
                 this.parseCardToHtml = function(cardId){
@@ -250,10 +278,27 @@ and open the template in the editor.
                     }
                     // Remove cardType letter so we only have number left
                     cardId = cardId.substring(1);
+                    // Check for specials like king, dame or knight
+                    switch(cardId){
+                        case '11':
+                            cardId = 'J';
+                            break;
+                            
+                        case '12':
+                            cardId = 'D';
+                            break;
+                            
+                        case '13':
+                            cardId = 'K';
+                            break;
+                            
+                        default:
+                            break;
+                    }
                     
                     // Little html parse, rather than splitting outside function
-                    outHtml = '<span class="card-html-icon">'+cardType+'</span>'+
-                            '<span class="card-html-number">'+cardId+'</span>';
+                    outHtml = '<div class="card-html-number">'+cardId+'</div>'+
+                            '<div class="card-html-icon">'+cardType+'</div>';
                     
                     return outHtml;
                 }
