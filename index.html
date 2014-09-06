@@ -149,6 +149,14 @@ and open the template in the editor.
                 height: 100%;
                 padding: 5px;
             }
+            
+            /* Misc / Global */
+            .red {
+                color: red;
+            }
+            .black {
+                color: black;
+            }
         </style>
     </head>
     <body>
@@ -253,7 +261,7 @@ and open the template in the editor.
                 }
                 card = card.substring(1);
                 document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
-                document.getElementById('card-background').innerHTML = cardBackgroundHtml;
+                // document.getElementById('card-background').innerHTML = cardBackgroundHtml;
                 document.getElementById('card-counter').innerHTML = deck.getCardsLeft()+' kort kvar';
             }
             
@@ -336,11 +344,11 @@ and open the template in the editor.
                 
                     cardType = this.getCardType(cardId);
                     cardId = this.parseSpecialCard(cardId);
-                    // colorClass = (cardType === ('&spades;' or '&clubs;')?'black':'red');
-                    // console.log(colorClass);
+                    // Determinate color
+                    colorClass = (cardType === '&spades;' || cardType === '&clubs;'?'black':'red');
                     // Little html parse, rather than splitting outside function
-                    outHtml = '<div class="card-html-number">'+cardId+'</div>'+
-                            '<div class="card-html-icon">'+cardType+'</div>';
+                    outHtml = '<div class="card-html-number '+colorClass+'">'+cardId+'</div>'+
+                            '<div class="card-html-icon '+colorClass+'">'+cardType+'</div>';
                     
                     return outHtml;
                 }
