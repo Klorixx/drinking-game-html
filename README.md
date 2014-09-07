@@ -16,7 +16,8 @@ Current roadmap:
     
   - future feauters (thoughts and so)
     - Custom rules for all cards and types (1-13 * 4 for diamond, spades, hearts and clubs)
-    - Card counter (how many played/left and/or "king warning")
+    - ~~Card counter (how many played/left and/or "king warning")~~ Done, not sure if will be used thou
+    - Advanced card counter (see how many of each card that has been dealt)
     - Sound effects? (technical limitations if should be available offline in a single html file?)
     - Cards that have "save"/"use" abilites?
     - Tracking of players
