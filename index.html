@@ -187,46 +187,77 @@ and open the template in the editor.
                     <div class="toolbar-section-content">
                         <table>
                             <tr>
-                                <th>Kort</th><th>Regel</th>
+                                <th>Kort</th><th colspan="2">Regel</th>
                             </tr>
                             <tr>
-                                <td>Kung</td><td><input type="text" id="13-input" name="13-input" value="Kung"/></td>
+                                <th></th>
+                                <th style="color: red;">Röda</th>
+                                <th>Svarta</th>
                             </tr>
                             <tr>
-                                <td>Dam</td><td><input type="text" id="12-input" name="12-input" value="Kategori"/></td>
+                                <td>Kung</td>
+                                <td><input type="text" id="13-input-r" name="13-input-r" value="Kung"/></td>
+                                <td><input type="text" id="13-input-s" name="13-input-s" value="Kung"/></td>
                             </tr>
                             <tr>
-                                <td>Knekt</td><td><input type="text" id="11-input" name="11-input" value="Ny regel"/></td>
+                                <td>Dam</td>
+                                <td><input type="text" id="12-input-r" name="12-input-r" value="Kategori"/></td>
+                                <td><input type="text" id="12-input-s" name="12-input-s" value="Kategori"/></td>
                             </tr>
                             <tr>
-                                <td>10</td><td><input type="text" id="10-input" name="10-input" value="Välj nästa spelare"/></td>
+                                <td>Knekt</td>
+                                <td><input type="text" id="11-input-r" name="11-input-r" value="Ny regel"/></td>
+                                <td><input type="text" id="11-input-s" name="11-input-s" value="Ny regel"/></td>
                             </tr>
                             <tr>
-                                <td>9</td><td><input type="text" id="9-input" name="9-input" value="Vattenfall"/></td>
+                                <td>10</td>
+                                <td><input type="text" id="10-input-r" name="10-input-r" value="Välj nästa spelare"/></td>
+                                <td><input type="text" id="10-input-s" name="10-input-s" value="Välj nästa spelare"/></td>
                             </tr>
                             <tr>
-                                <td>8</td><td><input type="text" id="8-input" name="8-input" value="Ny regel"/></td>
+                                <td>9</td>
+                                <td><input type="text" id="9-input-r" name="9-input-r" value="Vattenfall"/></td>
+                                <td><input type="text" id="9-input-s" name="9-input-s" value="Vattenfall"/></td>
                             </tr>
                             <tr>
-                                <td>7</td><td><input type="text" id="7-input" name="7-input" value="Sifferleken"/></td>
+                                <td>8</td>
+                                <td><input type="text" id="8-input-r" name="8-input-r" value="Ny regel"/></td>
+                                <td><input type="text" id="8-input-s" name="8-input-s" value="Ny regel"/></td>
                             </tr>
                             <tr>
-                                <td>6</td><td><input type="text" id="6-input" name="6-input" value="Ge 6 klunkar"/></td>
+                                <td>7</td>
+                                <td><input type="text" id="7-input-r" name="7-input-r" value="Sifferleken"/></td>
+                                <td><input type="text" id="7-input-s" name="7-input-s" value="Sifferleken"/></td>
                             </tr>
                             <tr>
-                                <td>5</td><td><input type="text" id="5-input" name="5-input" value="Ge 5 klunkar"/></td>
+                                <td>6</td>
+                                <td><input type="text" id="6-input-r" name="6-input-r" value="Ge 6 klunkar"/></td>
+                                <td><input type="text" id="6-input-s" name="6-input-s" value="Drick 6 klunkar"/></td>
                             </tr>
                             <tr>
-                                <td>4</td><td><input type="text" id="4-input" name="4-input" value="Ge 4 klunkar"/></td>
+                                <td>5</td>
+                                <td><input type="text" id="5-input-r" name="5-input-r" value="Ge 5 klunkar"/></td>
+                                <td><input type="text" id="5-input-s" name="5-input-s" value="Drick 5 klunkar"/></td>
                             </tr>
                             <tr>
-                                <td>3</td><td><input type="text" id="3-input" name="3-input" value="Drick 3 klunkar"/></td>
+                                <td>4</td>
+                                <td><input type="text" id="4-input-r" name="4-input-r" value="Ge 4 klunkar"/></td>
+                                <td><input type="text" id="4-input-s" name="4-input-s" value="Drick 4 klunkar"/></td>
                             </tr>
                             <tr>
-                                <td>2</td><td><input type="text" id="2-input" name="2-input" value="Ge en shot"/></td>
+                                <td>3</td>
+                                <td><input type="text" id="3-input-r" name="3-input-r" value="Ge 3 klunkar"/></td>
+                                <td><input type="text" id="3-input-s" name="3-input-s" value="Drick 3 klunkar"/></td>
                             </tr>
                             <tr>
-                                <td>Äss</td><td><input type="text" id="1-input" name="1-input" value="Ta en shot"/></td>
+                                <td>2</td>
+                                <td><input type="text" id="2-input-r" name="2-input-r" value="Ge en shot"/></td>
+                                <td><input type="text" id="2-input-s" name="2-input-s" value="Drick en shot"/></td>
+                            </tr>
+                            <tr>
+                                <td>Äss</td>
+                                <td><input type="text" id="1-input-r" name="1-input-r" value="Ge en shot"/></td>
+                                <td><input type="text" id="1-input-s" name="1-input-s" value="Drick en shot"/></td>
                             </tr>
                         </table>
                     </div>
@@ -252,16 +283,24 @@ and open the template in the editor.
             });
             
             function populateCard(card){
+                console.log('debug');
                 var cardHtml = deck.parseCardToHtml(card), 
                     cardBackgroundHtml = deck.parseCardToBackgroundHtml(card), 
                     iconDivs = document.getElementsByClassName('card-icon'), 
+                    cardColor = deck.getCardColor(card), 
                     i;
             
                 for(i=0;i<iconDivs.length;++i){
                     iconDivs[i].innerHTML = cardHtml;
                 }
+                console.log(cardColor);
                 card = card.substring(1);
-                document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
+                if(document.getElementById(card+'-input-'+cardColor) !== ''){
+                    document.getElementById('card-content').innerHTML = document.getElementById(card+'-input-'+cardColor).value;
+                } else {
+                    console.log('print value: '+card+'-input');
+                    document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
+                }
                 // document.getElementById('card-background').innerHTML = cardBackgroundHtml;
                 document.getElementById('card-counter').innerHTML = deck.getCardsLeft()+' kort kvar';
             }
@@ -417,6 +456,32 @@ and open the template in the editor.
                     }
                 
                     return cardType;
+                }
+                
+                this.getCardColor = function(cardName){
+                    var cardColor;
+                    
+                    console.log('parsing '+cardName);
+                    
+                    if(cardName.indexOf('s') !== -1){
+                        cardColor = 's';
+                    } else
+                    // Clubs
+                    if(cardName.indexOf('c') !== -1){
+                        cardColor = 's';
+                    } else 
+                    // Hearts
+                    if(cardName.indexOf('h') !== -1){
+                        cardColor = 'r';
+                    } else 
+                    // Diamonds
+                    if(cardName.indexOf('d') !== -1){
+                        cardColor = 'r';
+                    }
+                
+                    console.log(cardColor);
+                
+                    return cardColor;
                 }
             }
             
