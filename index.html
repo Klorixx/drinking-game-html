@@ -156,6 +156,9 @@ and open the template in the editor.
                 float: left;
                 width: 100%;
             }
+            #toolbar-section-content-wrapper {
+                overflow: auto;
+            }
             .toolbar-section-header {
                 float: left;
                 margin: 0 5px;
@@ -213,9 +216,9 @@ and open the template in the editor.
             <div id="toolbar-content" style="display: none;">
                 <div id="toolbar-section-wrapper">
                     <div id="toolbar-section-headers-wrapper">
-                        <div class="toolbar-section-header">Kortinställningar</div>
-                        <div class="toolbar-section-header">Statistik</div>
-                        <div class="toolbar-section-header">Information</div>
+                        <div class="toolbar-section-header" onclick="toolBar.switchTab('card-settings');">Kortinställningar</div>
+                        <div class="toolbar-section-header" onclick="toolBar.switchTab('card-statistics');">Statistik</div>
+                        <div class="toolbar-section-header" onclick="toolBar.switchTab('information');">Information</div>
                     </div>
                     <div id="toolbar-section-content-wrapper">
                         <div id="card-settings" class="toolbar-section-content" style="display: block;">
@@ -299,7 +302,15 @@ and open the template in the editor.
                             Statistik
                         </div>
                         <div id="information" class="toolbar-section-content">
-                            Info
+                            Information om denna app!<br />
+                            <br />
+                            Denna app bygger på klassiska fyllespelet "vattenfall"/"kung" m.fl.<br />
+                            "Kärt barn har många namn".<br />
+                            <br />
+                            Enda skillnaden är att detta är en digital version av spelet. Naturligtvis finns många varianter (i form av appar) på detta, men jag har valt att göra det till en webbanpass version för att stödja egentligen vilken enhet som helst.<br />
+                            Man får gärna skicka in förslag på ändringar (med knappen nedan), trevliga kommentarer t.o.m. hjälpa till och utveckla spelet vidare.<br />
+                            <br />
+                            <a href="mailto:admin@klorixx.se">Maila mig</a>
                         </div>
                     </div>
                 </div>
@@ -335,6 +346,17 @@ and open the template in the editor.
                     this.toolBarContent.style.display = 'none';
                     this.toolBarHeader.innerHTML = 'Inställningar (visa)';
                     this.toolBarWrapper.style.height = 'initial';
+                }
+                
+                this.switchTab = function(tabId){
+                    // First, close all tabs
+                    var elements = document.getElementById('toolbar-section-content-wrapper').children, i;
+                    for(i=0;i<elements.length;++i){
+                        document.getElementById(elements[i].id).style.display = 'none';
+                    }
+                    
+                    console.log('Going to open: '+tabId);
+                    document.getElementById(tabId).style.display = 'block';
                 }
             }
             
@@ -534,7 +556,8 @@ and open the template in the editor.
                     
                     return outHtml;
                 }
-                    
+                
+                // Gets card color (s/r)
                 this.getCardColor = function(cardName){
                     var cardColor;
                     
@@ -610,11 +633,9 @@ and open the template in the editor.
                 document.addEventListener('touchmove', handleTouchMove, false);
                 
                 toolBar = new toolBar();
-                // document.getElementById('toolbar-toggle').addEventListener('click', toolBar.toggleToolBar);
                 
                 deck = new cardDeck();
                 deck.shuffleDeck();
-                // document.getElementById('card-statistics').innerHTML = deck.getDealtCardStatistics();
             }
             
             window.onload = initiateGame();
