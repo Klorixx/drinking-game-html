@@ -23,10 +23,6 @@ and open the template in the editor.
             }
             
             /* Nav */
-            #navigation-wrapper {
-                width: 100%;
-                text-align: center;
-            }
             /* Made by http://www.bestcssbuttongenerator.com/ */
             #navigation-wrapper .nav-button {
                 -moz-box-shadow:inset 0px 1px 0px 0px #caefab;
@@ -69,6 +65,11 @@ and open the template in the editor.
                 top:1px;
             }
             /* End http://www.bestcssbuttongenerator.com/ */
+            
+            #topbar {
+                width: 100%;
+                text-align: center;
+            }
             
             /* Card */
             .current-card-wrapper {
@@ -208,9 +209,11 @@ and open the template in the editor.
     </head>
     <body>
         <div id="wrapper">
-            <div id="navigation-wrapper">
-                <a class="nav-button" onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard());">&lt; Föregående kort</a>
-                <a class="nav-button" onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">Nästa kort &gt;</a>
+            <div id="topbar">
+                <div id="navigation-wrapper">
+                    <a class="nav-button" onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard());">&lt; Föregående kort</a>
+                    <a class="nav-button" onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">Nästa kort &gt;</a>
+                </div>
                 <div id="card-counter">52 kort kvar</div>
             </div>
             <div class="current-card-wrapper">
@@ -229,6 +232,7 @@ and open the template in the editor.
                 <div id="toolbar-section-wrapper">
                     <div id="toolbar-section-headers-wrapper">
                         <div class="toolbar-section-header" onclick="toolBar.switchTab('card-settings');">Kortinställningar</div>
+                        <div class="toolbar-section-header" onclick="toolBar.switchTab('global-settings');">Globala inställningar</div>
                         <div class="toolbar-section-header" onclick="toolBar.switchTab('card-statistics');">Statistik</div>
                         <div class="toolbar-section-header" onclick="toolBar.switchTab('information');">Information</div>
                     </div>
@@ -310,6 +314,11 @@ and open the template in the editor.
                                 </tr>
                             </table>
                         </div>
+                        <div id="global-settings" class="toolbar-section-content">
+                            Globala inställningar:<br />
+                            <input type="checkbox" id="hide-nav" name="hide-nav" onclick="toolBar.toggleDiv('navigation-wrapper');"> Dölj navigationsknappar<br />
+                            <input type="checkbox" id="hide-cardcounter" name="hide-cardcounter" onclick="toolBar.toggleDiv('card-counter');"> Dölj "kort kvar" rutan<br />
+                        </div>
                         <div id="card-statistics" class="toolbar-section-content">
                             Statistik
                         </div>
@@ -375,6 +384,17 @@ and open the template in the editor.
                     
                     // Open tab
                     document.getElementById(tabId).style.display = 'block';
+                }
+                
+                // Toogle functions
+                this.toggleDiv = function(id){
+                    var div = document.getElementById(id);
+                    console.log(div.id+' display property = '+div.style.display);
+                    if(div.style.display === 'block' || div.style.display === ''){
+                        div.style.display = 'none';
+                    } else {
+                        div.style.display = 'block';
+                    }
                 }
             }
             
