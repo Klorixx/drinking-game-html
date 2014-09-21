@@ -362,7 +362,7 @@ and open the template in the editor.
                         elements[i].style.display = 'none';
                     }
                     
-                    console.log('Going to open: '+tabId);
+                    // Open tab
                     document.getElementById(tabId).style.display = 'block';
                 }
             }
@@ -547,7 +547,7 @@ and open the template in the editor.
                         currentCard, 
                         currentCountingCard, 
                         cardStatistics = [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                        outHtml, 
+                        outHtml = '<table><tr><th colspan="2">Antal kort som spelats</th></tr>', 
                         i;
                     
                     // 1st occurence will always be a undefined
@@ -560,12 +560,12 @@ and open the template in the editor.
                     currentCard = (this.getCurrentCard().substring(1))-1;
                     cardStatistics[currentCard] = cardStatistics[currentCard]+1;
 
-                    console.log(cardStatistics.length);
                     for(i=1;i<=cardStatistics.length;++i){
-                        console.log('printing cardStatistics['+i+'-1]: '+cardStatistics[i-1]);
-                        outHtml += '<span class="debug-number">'+this.parseSpecialCard('K'+i)+': '
-                                +cardStatistics[i-1]+'</span>';
+                        // We add "K" to parses, since it expect cardId formats (s4, c13 and such)
+                        outHtml += '<tr><td style="width: 30px;">'+this.parseSpecialCard('K'+i)+'</td>'
+                                +'<td>'+cardStatistics[i-1]+'</td></tr>';
                     }
+                    outHtml += '</table>';
 
                     return outHtml;
                 }
