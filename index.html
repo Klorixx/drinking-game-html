@@ -190,6 +190,15 @@ and open the template in the editor.
                 font-size: 44px;
                 line-height: 38px;
             }
+            .mail-button:link,
+            .mail-button:hover, 
+            .mail-button:visited, 
+            .mail-button:active {
+                color: black;
+                text-decoration: none;
+                font-size: 44px;
+                line-height: 38px;
+            }
         </style>
     </head>
     <body>
@@ -207,9 +216,7 @@ and open the template in the editor.
                     <div id="lower-card-icon" class="card-icon"></div>
                 </div>
             </div>
-            <div id="card-info-text">
-                
-            </div>
+            <div id="card-info-text"></div>
         </div>
         <div id="toolbar-wrapper">
             <div id="toolbar-toggle" onclick="toolBar.toggleToolBar();">Inställningar (visa)</div>
@@ -310,15 +317,15 @@ and open the template in the editor.
                             Enda skillnaden är att detta är en digital version av spelet. Naturligtvis finns många varianter (i form av appar) på detta, men jag har valt att göra det till en webbanpass version för att stödja egentligen vilken enhet som helst.<br />
                             Man får gärna skicka in förslag på ändringar (med knappen nedan), trevliga kommentarer t.o.m. hjälpa till och utveckla spelet vidare.<br />
                             <br />
-                            <a href="mailto:admin@klorixx.se">Maila mig</a>
+                            <a class="mail-button" href="">&#9993;</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="email-icon">
-            &#9993;
-        </div>
+        <!-- <div id="email-icon">
+            <a class="mail-button" href="">&#9993;</a>
+        </div> -->
         <script type="text/javascript">
             function toolBar(){
                 this.toolBarWrapper = document.getElementById('toolbar-wrapper');
@@ -352,7 +359,7 @@ and open the template in the editor.
                     // First, close all tabs
                     var elements = document.getElementById('toolbar-section-content-wrapper').children, i;
                     for(i=0;i<elements.length;++i){
-                        document.getElementById(elements[i].id).style.display = 'none';
+                        elements[i].style.display = 'none';
                     }
                     
                     console.log('Going to open: '+tabId);
@@ -582,6 +589,24 @@ and open the template in the editor.
                 }
             }
             
+            function mailer() {
+                this.addEmails = function(){
+                    var mailLinks = document.getElementsByClassName('mail-button'), i;
+                    for(i=0;i<mailLinks.length;++i){
+                        mailLinks[i].href = 'mailto:'+this.createEncodedEmail();
+                    }
+                }
+                
+                this.createEncodedEmail = function(){
+                    var a = 'admin';
+                    var b = 'klorixx';
+                    var c = '.se';
+                    var d = '@';
+
+                    return a+d+b+c;
+                }
+            }
+            
             // Swipe functions
             function handleTouchStart(evt) {
                 xDown = evt.touches[0].clientX;
@@ -598,6 +623,13 @@ and open the template in the editor.
 
                 var xDiff = xDown - xUp;
                 var yDiff = yDown - yUp;
+
+                var currentTime = new Date().getTime();
+                // Prevent any touch for happening more than twice each second
+                if(currentTime < lastTouchEvent + 500){
+                    return;
+                }
+                lastTouchEvent = currentTime;
 
                 if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
                     if ( xDiff > 0 ) {
@@ -625,17 +657,26 @@ and open the template in the editor.
             
             var deck, 
                 toolBar, 
+                mailer, 
+                lastTouchEvent, 
                 xDown = null, 
                 yDown = null;
             
             function initiateGame(){
+                // Add swipe listeners
                 document.addEventListener('touchstart', handleTouchStart, false);
                 document.addEventListener('touchmove', handleTouchMove, false);
                 
+                // Initiate toolbar
                 toolBar = new toolBar();
                 
+                // Initiate deck
                 deck = new cardDeck();
                 deck.shuffleDeck();
+                
+                // Create mail hrefs
+                mailer = new mailer();
+                mailer.addEmails();
             }
             
             window.onload = initiateGame();
