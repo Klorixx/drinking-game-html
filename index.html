@@ -150,6 +150,10 @@ and open the template in the editor.
                 height: 100%;
                 padding: 5px;
             }
+            .debug-number {
+                width: 100%;
+                display: block;
+            }
             
             /* Misc / Global */
             .red {
@@ -230,6 +234,11 @@ and open the template in the editor.
                             </tr>
                         </table>
                     </div>
+                    
+                    <div class="toolbar-section-header">Statistik</div>
+                    <div class="toolbar-section-content">
+                        <div id="card-statistics"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -264,6 +273,8 @@ and open the template in the editor.
                 document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
                 // document.getElementById('card-background').innerHTML = cardBackgroundHtml;
                 document.getElementById('card-counter').innerHTML = deck.getCardsLeft()+' kort kvar';
+                
+                document.getElementById('card-statistics').innerHTML = deck.getDealtCardStatistics();
             }
             
             // Whole deck logic
@@ -418,12 +429,35 @@ and open the template in the editor.
                 
                     return cardType;
                 }
+                
+                this.getDealtCardStatistics = function(){
+                    var cards = this.dealtCards, currentCard, i, 
+                        cardStatistics = [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                        outHtml;
+                    
+                    console.log(cards.length);
+                    for(i=0;i<cards.length;++i){
+                        console.log(cards);
+                        currentCard = (cards[i].substring(1))-1;
+                        cardStatistics[currentCard] = cardStatistics[currentCard]+1;
+                    }
+                    
+                    console.log(cardStatistics.length);
+                    for(i=1;i<=cardStatistics.length;++i){
+                        console.log('printing cardStatistics['+i+'-1]: '+cardStatistics[i-1]);
+                        outHtml += '<span class="debug-number">'+this.parseSpecialCard('K'+i)+': '
+                                +cardStatistics[i-1]+'</span>';
+                    }
+                    
+                    return outHtml;
+                }
             }
             
             var deck;
             function initiateGame(){
                 deck = new cardDeck();
                 deck.shuffleDeck();
+                // document.getElementById('card-statistics').innerHTML = deck.getDealtCardStatistics();
             }
             
             window.onload = initiateGame();
