@@ -20,6 +20,7 @@ and open the template in the editor.
             #wrapper {
                 width: 100%;
                 height: 100%;
+                position: absolute;
             }
             
             /* Nav */
@@ -76,14 +77,17 @@ and open the template in the editor.
                 width: 100%;
             }
             #current-card {
-                margin: 25px auto 45px auto;
+                // margin: 25px auto 45px auto;
+                top: 50%;
+                left: 50%;
+                margin: -176px 0 0 -127px;
                 width: 254px;
                 height: 352px;
                 background-color: white;
                 -moz-border-radius:10px;
                 -webkit-border-radius:10px;
                 border-radius: 10px;
-                position: relative;
+                position: fixed;
             }
             #card-background {
                 width: 100%;
@@ -159,7 +163,7 @@ and open the template in the editor.
             }
             .toolbar-section-header {
                 float: left;
-                margin: 0 5px;
+                margin: 5px;
                 padding: 3px;
                 background-color: #BBDFBE;
                 -moz-border-radius:3px;
@@ -652,7 +656,7 @@ and open the template in the editor.
                 startY,
                 distX,
                 distY,
-                threshold = 150, //required min distance traveled to be considered swipe
+                threshold = 100, //required min distance traveled to be considered swipe
                 restraint = 100, // maximum distance allowed at the same time in perpendicular direction
                 allowedTime = 300, // maximum time allowed to travel that distance
                 elapsedTime,
