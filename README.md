@@ -17,8 +17,9 @@ Current roadmap:
   - future feauters (thoughts and so)
     - ~~"Swipe" support for phones~~ Done
     - Custom rules for all cards and types (1-13 * 4 for diamond, spades, hearts and clubs)
+    - ~~Custom rules for at least black/red cards~~ Done
     - ~~Card counter (how many played/left and/or "king warning")~~ Done, not sure if will be used thou
-    - Advanced card counter (see how many of each card that has been dealt)
+    - ~~Advanced card counter (see how many of each card that has been dealt)~~ Done
     - Sound effects? (technical limitations if should be available offline in a single html file?)
     - Cards that have "save"/"use" abilites?
     - Tracking of players
