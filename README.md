@@ -9,14 +9,14 @@ Current roadmap:
 
   - v1 should contain
     - ~~Possibility to set custom rules for each card (1-13)~~ Done
-    - Possibility to save thoose rules in a cookie for later use if something crashes or is closed down
+    - ~~Possibility to save thoose rules in a cookie for later use if something crashes or is closed down~~ Done (some autosave / card tracker should still be implemented)
     - ~~Only pure html, css and js to ensure everything can be runned on devices (and "offline" from a SINGLE html file)~~ Done
     - ~~Next/previous card navigation~~ Done
     - ~~Ugly as fck graphic~~ Done
     
   - future feauters (thoughts and so)
     - ~~"Swipe" support for phones~~ Done
-    - Custom rules for all cards and types (1-13 * 4 for diamond, spades, hearts and clubs)
+    - ~~Custom rules for all cards and types (1-13 * 4 for diamond, spades, hearts and clubs)~~ Done
     - ~~Custom rules for at least black/red cards~~ Done
     - ~~Card counter (how many played/left and/or "king warning")~~ Done, not sure if will be used thou
     - ~~Advanced card counter (see how many of each card that has been dealt)~~ Done
