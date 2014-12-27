@@ -76,8 +76,9 @@ and open the template in the editor.
             .current-card-wrapper {
                 width: 100%;
             }
-            #current-card {
-                // margin: 25px auto 45px auto;
+            #current-card, 
+            #current-card-copy {
+                z-index: 5;
                 top: 50%;
                 left: 50%;
                 margin: -176px 0 0 -127px;
@@ -89,13 +90,19 @@ and open the template in the editor.
                 border-radius: 10px;
                 position: fixed;
             }
-            #card-background {
+            #current-card-copy {
+                // left: 60%;
+                margin-left: -127px;
+                z-index: 4;
+            }
+            .card-background {
                 width: 100%;
                 height: 100%;
                 position: absolute;
                 text-align: center;
             }
-            .card-icon {
+            .card-icon, 
+            .card-icon-copy {
                 width: 18%;
                 height: 22%;
                 position: absolute;
@@ -103,11 +110,13 @@ and open the template in the editor.
                 line-height: 39px;
                 text-align: center;
             }
-            #upper-card-icon {
+            #upper-card-icon, 
+            #upper-card-icon-copy {
                 top: 2%;
                 left: 2%;
             }
-            #lower-card-icon {
+            #lower-card-icon,
+            #lower-card-icon-copy {
                 bottom: 2%;
                 right: 2%;
                 // Rotate for extra nice effect
@@ -118,23 +127,26 @@ and open the template in the editor.
             .card-icon .card-html-icon, .card-icon .card-html-number {
                 width: 100%;
             }
-            #card-content-wrapper {
+            #card-content-wrapper, 
+            #card-content-wrapper-copy {
                 width: 80%;
-                height: 100px;
-                line-height: 100px;
+                height: 180px;
+                line-height: 180px;
                 position: absolute;
-                top: 35%;
+                top: 23%;
                 left: 10%;
                 -ms-transform: rotate(-45deg); /* IE 9 */
                 -webkit-transform: rotate(-45deg); /* Chrome, Safari, Opera */
                 transform: rotate(-45deg);
                 text-align: center;
             }
-            #card-content {
+            #card-content,
+            #card-content-copy {
                 display: inline-block;
                 vertical-align: middle;
                 line-height: normal;
                 font-size: 30px;
+                color: black;
             }
 
             /* Toolbar */
@@ -161,18 +173,16 @@ and open the template in the editor.
                 float: left;
                 width: 100%;
             }
-            .toolbar-section-header {
-                float: left;
-                margin: 5px;
-                padding: 3px;
-                background-color: #BBDFBE;
-                -moz-border-radius:3px;
-                -webkit-border-radius:3px;
-                border-radius: 3px;
-            }
             .toolbar-section-content {
                 float: left;
                 display: none;
+            }
+            .ruleSet,
+            .rulePatternSet {
+                display: none;
+            }
+            .ruleColorSet {
+                display: table-cell;
             }
             .debug-number {
                 width: 100%;
@@ -209,23 +219,48 @@ and open the template in the editor.
                 font-size: 44px;
                 line-height: 38px;
             }
+            .button {
+                float: left;
+                margin: 5px;
+                padding: 3px;
+                background-color: #9DB9A0;
+                -moz-border-radius:3px;
+                -webkit-border-radius:3px;
+                border-radius: 3px;
+            }
+            .button:hover, 
+            .button:active, 
+            .button.active {
+                background-color: #D3F5D6;
+            }
         </style>
     </head>
     <body>
         <div id="wrapper">
             <div id="topbar">
                 <div id="navigation-wrapper">
-                    <a class="nav-button" onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard());">&lt; Föregående kort</a>
-                    <a class="nav-button" onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">Nästa kort &gt;</a>
+                    <!-- <a class="nav-button" onclick="deck.getPreviousCard();populateCard(deck.getCurrentCard(),false);">&lt; Föregående kort</a> -->
+                    <!-- <a class="nav-button" onclick="deck.getNextCard();populateCard(deck.getCurrentCard(),true);">Nästa kort &gt;</a> -->
+                    <a class="nav-button" onclick="deck.animateCardFlip(false);">&lt; Föregående kort</a>
+                    <a class="nav-button" onclick="deck.animateCardFlip(true);">Nästa kort &gt;</a>
                 </div>
                 <div id="card-counter">52 kort kvar</div>
             </div>
-            <div class="current-card-wrapper">
-                <div id="current-card" onclick="deck.getNextCard();populateCard(deck.getCurrentCard());">
+            <div id="current-card-wrapper">
+                <!-- <div id="current-card" onclick="deck.getNextCard();populateCard(deck.getCurrentCard(),true);"> -->
+                <div id="current-card" onclick="deck.animateCardFlip(true);">
                     <div id="card-background"></div>
                     <div id="upper-card-icon" class="card-icon"></div>
                     <div id="card-content-wrapper"><span id="card-content"></span></div>
                     <div id="lower-card-icon" class="card-icon"></div>
+                </div>
+            </div>
+            <div id="current-card-wrapper-copy">
+                <div id="current-card-copy">
+                    <div id="card-background-copy"></div>
+                    <div id="upper-card-icon-copy" class="card-icon-copy"></div>
+                    <div id="card-content-wrapper-copy"><span id="card-content-copy"></span></div>
+                    <div id="lower-card-icon-copy" class="card-icon-copy"></div>
                 </div>
             </div>
             <div id="card-info-text"></div>
@@ -235,88 +270,156 @@ and open the template in the editor.
             <div id="toolbar-content" style="display: none;">
                 <div id="toolbar-section-wrapper">
                     <div id="toolbar-section-headers-wrapper">
-                        <div class="toolbar-section-header" onclick="toolBar.switchTab('card-settings');">Kortinställningar</div>
-                        <div class="toolbar-section-header" onclick="toolBar.switchTab('global-settings');">Globala inställningar</div>
-                        <div class="toolbar-section-header" onclick="toolBar.switchTab('card-statistics');">Statistik</div>
-                        <div class="toolbar-section-header" onclick="toolBar.switchTab('information');">Information</div>
+                        <div class="toolbar-section-header button" onclick="toolBar.switchTab(this,'card-settings');">Kortinställningar</div>
+                        <div class="toolbar-section-header button" onclick="toolBar.switchTab(this,'global-settings');">Globala inställningar</div>
+                        <div class="toolbar-section-header button" onclick="toolBar.switchTab(this,'card-statistics');">Statistik</div>
+                        <div class="toolbar-section-header button" onclick="toolBar.switchTab(this,'information');">Information</div>
                     </div>
                     <div id="toolbar-section-content-wrapper">
                         <div id="card-settings" class="toolbar-section-content" style="display: block;">
                             <table>
                                 <tr>
-                                    <th>Kort</th><th colspan="2">Regel</th>
+                                    <td><input type="radio" id="show_color_rules" name="show_rules" onchange="setRuleset();" value="ruleColor" checked/></td>
+                                    <td colspan="6">Visa regler per <strong>färg</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="show_pattern_rules" name="show_rules" onchange="setRuleset();" value="rulePattern" /></td>
+                                    <td colspan="6">Visa regler per <strong>mönster</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Kort</th>
+                                    <th colspan="6">Regel</th>
                                 </tr>
                                 <tr>
                                     <th></th>
-                                    <th style="color: red;">Röda</th>
-                                    <th>Svarta</th>
+                                    <th class="ruleSet ruleColorSet" style="color: red;">Röda</th>
+                                    <th class="ruleSet ruleColorSet" style="color: black;">Svarta</th>
+                                    <th class="ruleSet rulePatternSet" style="color: black;">Spader</th>
+                                    <th class="ruleSet rulePatternSet" style="color: black;">Klöver</th>
+                                    <th class="ruleSet rulePatternSet" style="color: red;">Hjärter</th>
+                                    <th class="ruleSet rulePatternSet" style="color: red;">Ruter</th>
                                 </tr>
                                 <tr>
                                     <td>Kung</td>
-                                    <td><input type="text" id="13-input-r" name="13-input-r" value="Kung"/></td>
-                                    <td><input type="text" id="13-input-s" name="13-input-s" value="Kung"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="13-input-red" class="ruleField" name="13-input-red" value="Kung" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="13-input-black" class="ruleField" name="13-input-black" value="Kung" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="13-input-spades" class="ruleField" name="13-input-spades" value="Kung" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="13-input-clubs" class="ruleField" name="13-input-clubs" value="Kung" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="13-input-hearts" class="ruleField" name="13-input-hearts" value="Kung" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="13-input-diams" class="ruleField" name="13-input-diams" value="Kung" /></td>
                                 </tr>
-                                <tr>
+                              <tr>
                                     <td>Dam</td>
-                                    <td><input type="text" id="12-input-r" name="12-input-r" value="Kategori"/></td>
-                                    <td><input type="text" id="12-input-s" name="12-input-s" value="Kategori"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="12-input-red" class="ruleField" name="12-input-red" value="Alla damer ger 3 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="12-input-black" class="ruleField" name="12-input-black" value="Alla damer dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="12-input-spades" class="ruleField" name="12-input-spades" value="Alla damer dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="12-input-clubs" class="ruleField" name="12-input-clubs" value="Alla damer dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="12-input-hearts" class="ruleField" name="12-input-hearts" value="Alla damer ger 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="12-input-diams" class="ruleField" name="12-input-diams" value="Alla damer ger 3 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>Knekt</td>
-                                    <td><input type="text" id="11-input-r" name="11-input-r" value="Ny regel"/></td>
-                                    <td><input type="text" id="11-input-s" name="11-input-s" value="Ny regel"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="11-input-red" class="ruleField" name="11-input-red" value="Alla herrar ger 3 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="11-input-black" class="ruleField" name="11-input-black" value="Alla herrar dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="11-input-spades" class="ruleField" name="11-input-spades" value="Alla herrar dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="11-input-clubs" class="ruleField" name="11-input-clubs" value="Alla herrar dricker 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="11-input-hearts" class="ruleField" name="11-input-hearts" value="Alla herrar ger 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="11-input-diams" class="ruleField" name="11-input-diams" value="Alla herrar ger 3 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>10</td>
-                                    <td><input type="text" id="10-input-r" name="10-input-r" value="Välj nästa spelare"/></td>
-                                    <td><input type="text" id="10-input-s" name="10-input-s" value="Välj nästa spelare"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="10-input-red" class="ruleField" name="10-input-red" value="Ny regel" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="10-input-black" class="ruleField" name="10-input-black" value="Ny regel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="10-input-spades" class="ruleField" name="10-input-spades" value="Ta bort regel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="10-input-clubs" class="ruleField" name="10-input-clubs" value="Ta bort regel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="10-input-hearts" class="ruleField" name="10-input-hearts" value="Ny regel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="10-input-diams" class="ruleField" name="10-input-diams" value="Ny regel" /></td>
                                 </tr>
                                 <tr>
                                     <td>9</td>
-                                    <td><input type="text" id="9-input-r" name="9-input-r" value="Vattenfall"/></td>
-                                    <td><input type="text" id="9-input-s" name="9-input-s" value="Vattenfall"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="9-input-red" class="ruleField" name="9-input-red" value="Tummregel" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="9-input-black" class="ruleField" name="9-input-black" value="Tummregel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="9-input-spades" class="ruleField" name="9-input-spades" value="Tummregel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="9-input-clubs" class="ruleField" name="9-input-clubs" value="Tummregel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="9-input-hearts" class="ruleField" name="9-input-hearts" value="Tummregel" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="9-input-diams" class="ruleField" name="9-input-diams" value="Tummregel" /></td>
                                 </tr>
                                 <tr>
                                     <td>8</td>
-                                    <td><input type="text" id="8-input-r" name="8-input-r" value="Ny regel"/></td>
-                                    <td><input type="text" id="8-input-s" name="8-input-s" value="Ny regel"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="8-input-red" class="ruleField" name="8-input-red" value="Kategori" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="8-input-black" class="ruleField" name="8-input-black" value="Kategori" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="8-input-spades" class="ruleField" name="8-input-spades" value="Kategori" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="8-input-clubs" class="ruleField" name="8-input-clubs" value="Kategori" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="8-input-hearts" class="ruleField" name="8-input-hearts" value="Kategori" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="8-input-diams" class="ruleField" name="8-input-diams" value="Kategori" /></td>
                                 </tr>
                                 <tr>
                                     <td>7</td>
-                                    <td><input type="text" id="7-input-r" name="7-input-r" value="Sifferleken"/></td>
-                                    <td><input type="text" id="7-input-s" name="7-input-s" value="Sifferleken"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="7-input-red" class="ruleField" name="7-input-red" value="Sifferleken (7an)" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="7-input-black" class="ruleField" name="7-input-black" value="Sifferleken (7an)" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="7-input-spades" class="ruleField" name="7-input-spades" value="Sifferleken (7an)" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="7-input-clubs" class="ruleField" name="7-input-clubs" value="Sifferleken (7an)" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="7-input-hearts" class="ruleField" name="7-input-hearts" value="Sifferleken (7an)" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="7-input-diams" class="ruleField" name="7-input-diams" value="Sifferleken (7an)" /></td>
                                 </tr>
                                 <tr>
                                     <td>6</td>
-                                    <td><input type="text" id="6-input-r" name="6-input-r" value="Ge 6 klunkar"/></td>
-                                    <td><input type="text" id="6-input-s" name="6-input-s" value="Drick 6 klunkar"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="6-input-red" class="ruleField" name="6-input-red" value="Ge 1 shot" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="6-input-black" class="ruleField" name="6-input-black" value="Drick 1 shot" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="6-input-spades" class="ruleField" name="6-input-spades" value="Drick 1 shot" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="6-input-clubs" class="ruleField" name="6-input-clubs" value="Drick 2 shots" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="6-input-hearts" class="ruleField" name="6-input-hearts" value="Ge 2 shots" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="6-input-diams" class="ruleField" name="6-input-diams" value="Ge 1 shot" /></td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
-                                    <td><input type="text" id="5-input-r" name="5-input-r" value="Ge 5 klunkar"/></td>
-                                    <td><input type="text" id="5-input-s" name="5-input-s" value="Drick 5 klunkar"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="5-input-red" class="ruleField" name="5-input-red" value="Ge 5 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="5-input-black" class="ruleField" name="5-input-black" value="Drick 5 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="5-input-spades" class="ruleField" name="5-input-spades" value="Drick 5 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="5-input-clubs" class="ruleField" name="5-input-clubs" value="Drick 4 klunkar, ge 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="5-input-hearts" class="ruleField" name="5-input-hearts" value="Ge 4 klunkar, drick 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="5-input-diams" class="ruleField" name="5-input-diams" value="Ge 5 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
-                                    <td><input type="text" id="4-input-r" name="4-input-r" value="Ge 4 klunkar"/></td>
-                                    <td><input type="text" id="4-input-s" name="4-input-s" value="Drick 4 klunkar"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="4-input-red" class="ruleField" name="4-input-red" value="Ge 4 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="4-input-black" class="ruleField" name="4-input-black" value="Drick 4 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="4-input-spades" class="ruleField" name="4-input-spades" value="Drick 4 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="4-input-clubs" class="ruleField" name="4-input-clubs" value="Drick 3 klunkar, ge 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="4-input-hearts" class="ruleField" name="4-input-hearts" value="Ge 3 klunkar, drick 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="4-input-diams" class="ruleField" name="4-input-diams" value="Ge 4 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td><input type="text" id="3-input-r" name="3-input-r" value="Ge 3 klunkar"/></td>
-                                    <td><input type="text" id="3-input-s" name="3-input-s" value="Drick 3 klunkar"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="3-input-red" class="ruleField" name="3-input-red" value="Ge 3 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="3-input-black" class="ruleField" name="3-input-black" value="Drick 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="3-input-spades" class="ruleField" name="3-input-spades" value="Drick 3 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="3-input-clubs" class="ruleField" name="3-input-clubs" value="Drick 2 klunkar, ge 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="3-input-hearts" class="ruleField" name="3-input-hearts" value="Ge 2 klunkar, drick 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="3-input-diams" class="ruleField" name="3-input-diams" value="Ge 3 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td><input type="text" id="2-input-r" name="2-input-r" value="Ge en shot"/></td>
-                                    <td><input type="text" id="2-input-s" name="2-input-s" value="Drick en shot"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="2-input-red" class="ruleField" name="2-input-red" value="Ge 2 klunkar" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="2-input-black" class="ruleField" name="2-input-black" value="Drick 2 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="2-input-spades" class="ruleField" name="2-input-spades" value="Drick 2 klunkar" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="2-input-clubs" class="ruleField" name="2-input-clubs" value="Drick 1 klunk, ge 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="2-input-hearts" class="ruleField" name="2-input-hearts" value="Drick 1 klunk, ge 1 klunk" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="2-input-diams" class="ruleField" name="2-input-diams" value="Ge 2 klunkar" /></td>
                                 </tr>
                                 <tr>
                                     <td>Äss</td>
-                                    <td><input type="text" id="1-input-r" name="1-input-r" value="Ge en shot"/></td>
-                                    <td><input type="text" id="1-input-s" name="1-input-s" value="Drick en shot"/></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="1-input-red" class="ruleField" name="1-input-red" value="Ge shot" /></td>
+                                    <td class="ruleSet ruleColorSet"><input type="text" id="1-input-black" class="ruleField" name="1-input-black" value="Drick shot" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="1-input-spades" class="ruleField" name="1-input-spades" value="Drick 1 shot" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="1-input-clubs" class="ruleField" name="1-input-clubs" value="Drick 2 shots" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="1-input-hearts" class="ruleField" name="1-input-hearts" value="Ge 2 shots" /></td>
+                                    <td class="ruleSet rulePatternSet"><input type="text" id="1-input-diams" class="ruleField" name="1-input-diams" value="Ge 1 shot" /></td>
                                 </tr>
+                                
                             </table>
+                            <a class="button" onclick="deck.saveRules();">Spara regler</a>
+                            <a class="button" onclick="deck.loadRules();">Ladda regler</a>
                         </div>
                         <div id="global-settings" class="toolbar-section-content">
                             Globala inställningar:<br />
@@ -339,6 +442,7 @@ and open the template in the editor.
                             <br />
                             Historik om spelet (s.k. changelog)<br />
                             <ul>
+                                <li><span class="bold">2014-12-27</span>: Supersnygga "bläddringseffekter" för att tydliggöra när man byter kort, ladda/spara spelregler (i cookie)</li>
                                 <li><span class="bold">2014-09-21</span>: Möjlighet att se statistik infördes i spelet</li>
                                 <li><span class="bold">2014-09-20</span>: Stöd för "swipe" i mobila enheter</li>
                             </ul>
@@ -379,7 +483,7 @@ and open the template in the editor.
                     this.toolBarIsOpen = false;
                 }
                 
-                this.switchTab = function(tabId){
+                this.switchTab = function(element, tabId){
                     // First, close all tabs
                     var elements = document.getElementById('toolbar-section-content-wrapper').children, i;
                     for(i=0;i<elements.length;++i){
@@ -388,12 +492,21 @@ and open the template in the editor.
                     
                     // Open tab
                     document.getElementById(tabId).style.display = 'block';
+                    
+                    // Deactive all "active" tab headers
+                    var tabs = document.getElementsByClassName('toolbar-section-header');
+                    for(var i=0; i<tabs.length; ++i){
+                        tabs[i].classList.remove('active');
+                    }
+                    
+                    // Activate current tab header
+                    element.classList.add('active');
+                    // element.style.backgroundColor='#D3F5D6';
                 }
                 
                 // Toogle functions
                 this.toggleDiv = function(id){
                     var div = document.getElementById(id);
-                    console.log(div.id+' display property = '+div.style.display);
                     if(div.style.display === 'block' || div.style.display === ''){
                         div.style.display = 'none';
                     } else {
@@ -402,25 +515,44 @@ and open the template in the editor.
                 }
             }
             
-            function populateCard(card){
+            function populateCard(card,populateReal){
                 var cardHtml = deck.parseCardToHtml(card), 
                     cardBackgroundHtml = deck.parseCardToBackgroundHtml(card), 
-                    iconDivs = document.getElementsByClassName('card-icon'), 
+                    iconDivs, 
+                    rule = deck.getRule(card), 
                     cardColor = deck.getCardColor(card), 
                     i;
             
+                if(populateReal){
+                    iconDivs = document.getElementsByClassName('card-icon');
+                } else {
+                    iconDivs = document.getElementsByClassName('card-icon-copy');
+                }
+                console.log('Rule in '+rule);
                 for(i=0;i<iconDivs.length;++i){
                     iconDivs[i].innerHTML = cardHtml;
                 }
-                card = card.substring(1);
+                // card = card.substring(1);
+                
+                // Update card with rule
+                if(populateReal){
+                    document.getElementById('card-content').innerHTML = rule;
+                } else {
+                    document.getElementById('card-content-copy').innerHTML = rule;
+                }
+                
+                /* Old card logic
                 if(document.getElementById(card+'-input-'+cardColor) !== ''){
                     document.getElementById('card-content').innerHTML = document.getElementById(card+'-input-'+cardColor).value;
                 } else {
                     document.getElementById('card-content').innerHTML = document.getElementById(card+'-input').value;
-                }
+                } */
                 // document.getElementById('card-background').innerHTML = cardBackgroundHtml;
+                
+                // Update cards left counter
                 document.getElementById('card-counter').innerHTML = deck.getCardsLeft()+' kort kvar';
                 
+                // Update card statistics
                 document.getElementById('card-statistics').innerHTML = deck.getDealtCardStatistics();
             }
             
@@ -501,7 +633,7 @@ and open the template in the editor.
                 this.parseCardToHtml = function(cardId){
                     var cardType, outHtml;
                 
-                    cardType = this.getCardType(cardId);
+                    cardType = this.getCardType(cardId,true);
                     cardId = this.parseSpecialCard(cardId);
                     // Determinate color
                     colorClass = (cardType === '&spades;' || cardType === '&clubs;'?'black':'red');
@@ -513,7 +645,7 @@ and open the template in the editor.
                 }
                 
                 this.parseCardToBackgroundHtml = function(cardId){
-                    var cardType = this.getCardType(cardId), 
+                    var cardType = this.getCardType(cardId,true), 
                         outHtml;
                 
                     cardId = this.parseSpecialCard(cardId);
@@ -554,26 +686,29 @@ and open the template in the editor.
                     return cardId;
                 }
                 
-                this.getCardType = function(cardId){
+                this.getCardType = function(cardId,htmlEncoded){
                     var cardType;
                     // Check card for "type"
                     // Spades
                     if(cardId.indexOf('s') !== -1){
-                        cardType = '&spades;';
+                        cardType = 'spades';
                     } else
                     // Clubs
                     if(cardId.indexOf('c') !== -1){
-                        cardType = '&clubs;';
+                        cardType = 'clubs';
                     } else 
                     // Hearts
                     if(cardId.indexOf('h') !== -1){
-                        cardType = '&hearts;';
+                        cardType = 'hearts';
                     } else 
                     // Diamonds
                     if(cardId.indexOf('d') !== -1){
-                        cardType = '&diams;';
+                        cardType = 'diams';
                     }
                 
+                    if(htmlEncoded){
+                        return '&'+cardType+';';
+                    }
                     return cardType;
                 }
                 
@@ -611,22 +746,145 @@ and open the template in the editor.
                     
                     // Spades
                     if(cardName.indexOf('s') !== -1){
-                        cardColor = 's';
+                        cardColor = 'black';
                     } else
                     // Clubs
                     if(cardName.indexOf('c') !== -1){
-                        cardColor = 's';
+                        cardColor = 'black';
                     } else 
                     // Hearts
                     if(cardName.indexOf('h') !== -1){
-                        cardColor = 'r';
+                        cardColor = 'red';
                     } else 
                     // Diamonds
                     if(cardName.indexOf('d') !== -1){
-                        cardColor = 'r';
+                        cardColor = 'red';
                     }
                 
                     return cardColor;
+                }
+                
+                this.getRule = function(card){
+                    var rule, 
+                        cardNumber = card.substring(1),
+                        cardExtra;
+                    
+                    // If ruleset is color, we check thoose two fields
+                    switch(ruleSet){
+                        case 'ruleColor':
+                            cardExtra = this.getCardColor(card);
+                            break;
+                            
+                        case 'rulePattern':
+                            var cardExtra = this.getCardType(card,false);
+                            break;
+                            
+                        default:
+                            alert('Ruleset not defined...');
+                            break;
+                    }
+                    rule = document.getElementById(cardNumber+'-input-'+cardExtra).value;
+                    
+                    return rule;
+                }
+                
+                this.animateCardFlip = function(dirForward){
+                    var currentCardDiv = document.getElementById('current-card'),
+                        copyCardDiv = document.getElementById('current-card-copy'),
+                        cardWidth = currentCardDiv.offsetWidth, 
+                        cardSpeed = 16, 
+                        cardTimerSpeed = 8, 
+                        cardMovementOffset = 30, 
+                        cardMovement = 0, 
+                        cardTimer, 
+                        newMarginLeft, 
+                        offset, 
+                        i;
+                    
+                    // Check direction of card
+                    if(dirForward){
+                        // Forward!
+                        // Set "current" card to copy, and new card to "real" place
+                        if(this.getCurrentCard() !== undefined){
+                            console.log('Populating copy ('+this.getCurrentCard()+')');
+                            populateCard(this.getCurrentCard(),false);
+                            copyCardDiv.style.zIndex='6';
+                        }
+                        
+                        // Set new card to "real"
+                        this.getNextCard();
+                        populateCard(this.getCurrentCard(),true);
+                    } else {
+                        console.log('Populating copy ('+this.getCurrentCard()+')');
+                        populateCard(this.getCurrentCard(),true);
+                        copyCardDiv.style.zIndex='4';
+                        
+                        this.getPreviousCard();
+                        populateCard(this.getCurrentCard(),false);
+                    }
+                        
+                    // Animate copy card
+                    // Copy calculated margin to element
+                    var originalPos = window.getComputedStyle(copyCardDiv).marginLeft;
+                    copyCardDiv.style.marginLeft = originalPos;
+
+                    offset = parseInt(cardWidth+cardMovementOffset);
+                    // Move right first
+                    cardTimer = setInterval(function() {
+                        // Forward / backward (depending on dirForward)
+                        if(cardMovement < offset){
+                            if(dirForward){
+                                newMarginLeft = parseInt(copyCardDiv.style.marginLeft)+cardSpeed;
+                            } else {
+                                newMarginLeft = parseInt(copyCardDiv.style.marginLeft)-cardSpeed;
+                            }
+                            copyCardDiv.style.marginLeft = newMarginLeft+'px';
+                            cardMovement = cardMovement+cardSpeed;
+                        } else if(copyCardDiv.style.marginLeft > originalPos){
+                            // Now backwards
+                            if(dirForward){
+                                copyCardDiv.style.zIndex='4';
+                                newMarginLeft = parseInt(copyCardDiv.style.marginLeft)-cardSpeed;
+                            } else {
+                                copyCardDiv.style.zIndex='6';
+                                newMarginLeft = parseInt(copyCardDiv.style.marginLeft)+cardSpeed;
+                            }
+                            copyCardDiv.style.marginLeft = newMarginLeft+'px';
+                        } else {
+                            copyCardDiv.style.marginLeft = originalPos;
+                            clearInterval(cardTimer);
+                        }
+                    },cardTimerSpeed);
+                }
+                
+                this.saveRules = function(){
+                    var fields = document.getElementsByClassName('ruleField'), 
+                        json = '{"rules":[', 
+                        rules = [];
+                    
+                    for(var i=0; i<fields.length; ++i){
+                        var key = fields[i].id,
+                            value =  fields[i].value;
+                        
+                        json += '{"id":"'+key+'","value":"'+value+'"},';
+                    }
+                    json = json.substring(0,json.length-1);
+                    json += ']}';
+                    setCookie('rules',json,30);
+                }
+                
+                this.loadRules = function(inputRules){
+                    var rules;
+                    if(inputRules === undefined){
+                        var json = JSON.parse(getCookie('rules'));
+                        rules = json['rules'];
+                    } else {
+                        rules = inputRules;
+                    }
+                    
+                    for(var i=0;i<rules.length;++i){
+                        document.getElementById(rules[i]['id']).value = rules[i]['value'];
+                    }
                 }
             }
             
@@ -646,6 +904,30 @@ and open the template in the editor.
 
                     return a+d+b+c;
                 }
+            }
+            
+            /**
+             * Cred to http://www.w3schools.com/js/js_cookies.asp
+             */
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+d.toUTCString();
+                document.cookie = cname + "=" + cvalue + "; " + expires;
+            }
+            
+            /**
+             * Cred to http://www.w3schools.com/js/js_cookies.asp
+             */
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1);
+                    if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+                }
+                return "";
             }
             
             // Lib found at http://www.javascriptkit.com/javatutors/touchevents2.shtml
@@ -695,11 +977,47 @@ and open the template in the editor.
            }
             
             var deck, 
+                ruleSet, 
                 toolBar, 
                 mailer, 
                 lastTouchEvent, 
                 xDown = null, 
                 yDown = null;
+        
+            function setRuleset(){
+                var rules = document.getElementsByName('show_rules'),
+                    i;
+                for(i=0; i<rules.length; ++i){
+                    if(rules[i].checked){
+                        ruleSet = rules[i].value;
+                        break;
+                    }
+                }
+                
+                // Hide all elements with ruleSet class
+                var hideAll = document.getElementsByClassName('ruleSet'), show;
+                for(i=0; i<hideAll.length; ++i){
+                    hideAll[i].style.display = 'none';
+                }
+                switch(ruleSet){
+                    case 'ruleColor':
+                        show = document.getElementsByClassName('ruleColorSet');
+                        break;
+                        
+                    case 'rulePattern':
+                        show = document.getElementsByClassName('rulePatternSet');
+                        break;
+                        
+                    default:
+                        alert('Ruleset not implemented');
+                        break;
+                }
+                
+                // Show all ruleSet with current ruleSet
+                for(i=0; i<show.length; ++i){
+                    show[i].style.display = 'table-cell';
+                }
+            }
             
             function initiateGame(){                
                 // Initiate toolbar
@@ -708,6 +1026,10 @@ and open the template in the editor.
                 // Initiate deck
                 deck = new cardDeck();
                 deck.shuffleDeck();
+                deck.loadRules();
+                
+                // Assign standard rules
+                setRuleset();
                 
                 // Create mail hrefs
                 mailer = new mailer();
@@ -716,14 +1038,16 @@ and open the template in the editor.
                 // Add swipe listeners
                 swipedetect(document.getElementById('wrapper'),function(cb){
                     if(cb === 'left'){
-                        deck.getNextCard();
+                        // deck.getNextCard();
+                        deck.animateCardFlip(false);
                     }
                     if(cb === 'right'){
-                        deck.getPreviousCard();
+                        // deck.getPreviousCard();
+                        deck.animateCardFlip(true);
                     }
-                    if(cb === 'right' || cb === 'left'){
-                        populateCard(deck.getCurrentCard());
-                    }
+//                    if(cb === 'right' || cb === 'left'){
+//                        populateCard(deck.getCurrentCard(),true);
+//                    }
                     
                     if(cb === 'up'){
                         toolBar.openToolBar();
